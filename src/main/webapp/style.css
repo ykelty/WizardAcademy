@@ -1,0 +1,232 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Schoolbell", cursive;
+    background-color: #4B0082;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    color: #FFD700;
+}
+
+#welcomeSection, #instructionsSection {
+    width: 80%;  /* Adjust this to control the width of these sections */
+    max-width: 600px; /* Optional: prevents it from becoming too wide on larger screens */
+}
+
+
+#welcomeSection h1, #welcomeSection p {
+    margin: 0 0 20px 0;
+    
+    color: #FFFFFF;
+    text-align: center; /* Ensures text is centered */
+}
+
+
+
+#instructionsSection p {
+    
+    font-size: 16px;
+    color: #FFFFFF;
+    width: 80%;
+    
+}
+
+#authContainer {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Adds space between the forms */
+    margin-bottom: 20px;
+}
+
+.auth-form {
+    flex: 1; /* Makes each form take equal width */
+    padding: 20px;
+    background-color: #4B0082;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    
+}
+
+input[type="text"], input[type="password"], input[type="number"] {
+    background-color: #FFF;
+    color: #4B0082;
+    border: 2px solid #4B0082;
+    padding: 8px;
+    width: calc(100% - 20px);
+}
+
+input[type="text"]:focus, input[type="password"]:focus, input[type="number"]:focus {
+    border-color: #FFD700;
+    outline: none;
+}
+
+button {
+    background-color: #4B0082;
+    color: #FFD700;
+    border: none;
+    padding: 10px 20px;
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+    border: 2px solid #FFD700; /* Gold border */
+    transition: background-color 0.3s, color 0.3s;
+}
+
+button:hover {
+    background-color: #FFD700;
+    color: #4B0082;
+}
+
+.profile-avatar {
+    width: 80px;
+    height: auto;
+    margin-top: 20px;
+}
+
+#quiz-container, .leaderboard {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: auto; /* Adjust height as needed */
+    width: 600px; /* Set a fixed width for the container */
+    max-width: 50%; /* Prevent it from exceeding the viewport width */
+    margin: 0 auto; /* Center container */
+    overflow-wrap: break-word; /* Ensure long words break and don't overflow */
+    display: none; /* Initially hidden */
+    
+}
+
+
+
+#quiz-container{
+	color: #000000;
+}
+
+.battle-section {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    width: 100%; /* Ensure it takes the full width */
+    max-width: 800px;
+}
+.avatars {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.dragon-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.health-bar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px; /* Space between health bar and dragon image */
+}
+
+
+
+.wizard-avatar {
+    width: 100px;
+    height: auto;
+    margin-right: 50px;
+}
+
+.dragon-avatar {
+    width: 100px;
+    height: auto;
+    margin-left: 50px;
+}
+
+.health-bar {
+    width: 80px; /* Adjust width to be smaller */
+    height: 10px; /* Adjust height to be smaller */
+    background-color: #ccc;
+    position: relative;
+}
+
+.health-bar-inner {
+    height: 100%;
+    background-color: red;
+    width: 100%; /* Initial health set to 100% */
+    transition: width 0.5s; /* Smooth transition when health changes */
+}
+#healthLabel {
+    margin: 0;
+    font-size: 12px; /* Smaller font size */
+    color: #FFD700;
+}
+
+.battle-feedback {
+    margin-top: 10px;
+    font-size: 16px;
+    color: #FFD700;
+}
+
+
+#wizardArea, #dragonArea {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.profile-avatar {
+    width: 80px;
+    height: auto;
+    margin: 0 20px;
+}
+
+
+#dragonHealthBar {
+    width: 100px;
+    height: 10px;
+    background-color: #FF0000;
+    margin-top: 10px;
+    border: 1px solid #000;
+}
+#dragonHealth {
+    width: 100%;
+    height: 100%;
+    background-color: #00FF00;
+}
+.battle-feedback {
+    margin-top: 10px;
+    font-size: 16px;
+    color: #FFD700;
+}
+
+
+
+
+.leaderboard li, #profileDetails li {
+    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+h1, h2 {
+    font-family: "Permanent Marker", cursive;
+}
+
+h3 {
+    font-family: "Permanent Marker", cursive;
+    color: #FFFFFF;
+    font-weight: lighter;
+}

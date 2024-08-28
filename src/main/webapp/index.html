@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MathKing Quiz</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Schoolbell&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Welcome Section -->
+    <div id="welcomeSection">
+        <h1>Welcome to Math Wizard!!</h1>
+        <p>Quickly Register or Log In to play</p>
+        
+    </div>
+
+    
+
+    <div id="authContainer">
+    	<!-- Registration Form -->
+    	<div id="registration" class="auth-form">
+        	<h2>Register</h2>
+        	<input type="text" id="registerUsername" placeholder="Username">
+        	<input type="password" id="registerPassword" placeholder="Password">
+        	<button id="registerButton">Register</button>
+    	</div>
+
+    	<!-- Login Form -->
+    	<div id="login" class="auth-form">
+        	<h2>Login</h2>
+        	<input type="text" id="loginUsername" placeholder="Username">
+        	<input type="password" id="loginPassword" placeholder="Password">
+        	<button id="loginButton">Login</button>
+    	</div>
+	</div>
+	
+	<!-- Instructions Section -->
+    <div id="instructionsSection">
+    	<h2>Instructions</h2>
+        <h3>1. You will face five questions based on your level rating <br>2. Answer the questions as accurately and quickly as possible <br>3. The better you do, the more points you will receive to upgrade your wizard!</h3>
+    </div>
+
+    <!-- Profile Section -->
+    <div id="profile" style="display:none;">
+        <h2>Your Profile</h2>
+        <img src="the_wizard.png" alt="Wizard Avatar" class="profile-avatar">
+        <p id="levelRating">Level: <span id="userLevel"></span></p>
+        <ul id="profileDetails"></ul>
+    </div>
+
+    <!-- Quiz UI -->
+    <div id="quiz-container" class="quiz-container" style="display:none;">
+        <h1>Math Wizard</h1>
+        <div id="question" class="question"></div>
+        <input type="text" id="answer" class="answer" placeholder="Your answer">
+        <button id="submit" class="submit-btn">Submit</button>
+        <div id="feedback" class="feedback"></div>
+        <div id="progress" class="progress"></div>
+        <button onclick="showLeaderboard()">View Leaderboard</button>
+        <button onclick="showProfile()">View Profile</button>
+        <button id="playAgainButton" onclick="playAgain()" style="display:none;">Play Again</button> 
+        
+        
+    </div>
+    
+    
+    <div id="battleSection" class="battle-section" style="display:none;">
+    	<div class="avatars">
+        	<img src="the_wizard.png" alt="Wizard Avatar" id="wizardAvatar" class="wizard-avatar">
+        	<div class="dragon-container">
+            	<div class="health-bar-container">
+                	<p id="healthLabel">Dragon's Health: <span id="dragonHealthText">100</span></p>
+                	<div class="health-bar">
+                    	<div id="dragonHealth" class="health-bar-inner"></div>
+                	</div>
+            	</div>
+            	<img src="dragon.jpg" alt="Dragon Avatar" id="dragonAvatar" class="dragon-avatar">
+        	</div>
+    	</div>
+    	<p id="battleFeedback" class="battle-feedback"></p>
+	</div>
+    
+    
+
+    <!-- Leaderboard -->
+    <div id="leaderboard" style="display:none;">
+        <h2 id="leaderboardHeader">Global Top 10 Leaderboard</h2>
+        <ul id="leaderboardList"></ul>
+        <button onclick="showLeaderboard()">View Leaderboard</button>
+        <button onclick="showProfile()">View Profile</button>
+        <button onclick="showQuiz()">Back to Quiz</button>
+        <button id="playAgainButton" onclick="playAgain()" style="display:none;">Play Again</button> 
+    </div>
+
+    <script src="script.js?239"></script>
+</body>
+</html>
+

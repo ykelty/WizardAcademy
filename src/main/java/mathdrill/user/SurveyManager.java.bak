@@ -1,0 +1,353 @@
+package mathdrill.user;
+
+import mathdrill.data.DataManager;
+import java.sql.ResultSet;
+import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import mathdrill.data.util.QueryBuilder;
+import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
+/**
+ * <p>Title: </p>
+ * <p>Description: </p>
+ * <p>Copyright: Copyright (c) 2007</p>
+ * <p>Company: Noetic Learning </p>
+ * @author Li Kelty
+ * @version 1.0
+ */
+
+public class UserManager extends BaseManager {
+
+  public UserManager() {
+  }
+
+
+  public static User login (String user_name, String password) throws  UserException{
+    User user = null;
+    String exceptionMsg="";
+
+    try {
+    Connection con = DataManager.getConnection();
+    Statement statement = con.createStatement();
+    QueryBuilder query = new QueryBuilder("Select * from user where user_name= ? and password = ? ;");
+    query.AddParameter(makeStringParam(user_name));
+    query.AddParameter(makeStringParam(password));
+    String sqlStatement =query.getQueryString();
+     System.out.println(sqlStatement);
+      logWriter.logErrorMessage(sqlStatement);
+    ResultSet result = statement.executeQuery(sqlStatement);
+    if (result.first() && result.isFirst()){
+
+      user = new User();
+      user.setUserId(result.getInt("id"));
+      user.setUserName(result.getString("user_name"));
+      user.setEmail(result.getString("email").toLowerCase());
+      user.setPassword(result.getString("password"));
+       user.setStatus(result.getString("status"));
+         user.setPhone(result.getString("phone"));
+       user.setStatus_effective_start_date(getUtilDate(result.getDate("status_effective_start_date")));
+       user.setStatus_effective_end_date(getUtilDate(result.getDate("status_effective_end_date")));
+    }
+    else {
+      System.out.println("Login Failed");
+      exceptionMsg = "Login failed: invalid email or password.";
+       logWriter.logErrorMessage(exceptionMsg);
+    }
+    }
+    catch (SQLException e){
+      user =null;
+      System.out.println( "SQLException:"+e.getMessage());
+      e.printStackTrace();
+      exceptionMsg = "Login Failed: SQL error. Contact System Administrator";
+      logWriter.logErrorMessage(exceptionMsg+":"+e.getMessage());
+    }
+    catch (Exception e){
+       user =null;
+       System.out.println( "Exception:"+e.getMessage());
+       e.printStackTrace();
+       exceptionMsg = "Login Failed: System error. Contact System Administrator";
+       logWriter.logErrorMessage(exceptionMsg+":"+e.getMessage());
+    }
+
+    if (user == null)
+      throw new UserException(exceptionMsg);
+
+    return user;
+
+  }
+
+   public static User getUserByName (String userName) throws  UserException{
+   User account = null;
+   String exceptionMsg="";
+
+   try {
+   Connection con = DataManager.getConnection();
+   Statement statement = con.createStatement();
+   QueryBuilder query = new QueryBuilder("Select * from user where user_name=?");
+   query.AddParameter(makeStringParam(userName));
+   String sqlStatement =query.getQueryString();
+    System.out.println(sqlStatement);
+ //   logWriter.logDebugMessage(sqlStatement);
+      logWriter.logErrorMessage(sqlStatement);
+   ResultSet result = statement.executeQuery(sqlStatement);
+   if (result.first() && result.isFirst()){
+     account = new User();
+     account.setUserId(result.getInt("id"));
+     account.setUserName(result.getString("user_name"));
+     account.setEmail(result.getString("email").toLowerCase());
+      account.setPassword(result.getString("password"));
+      account.setStatus(result.getString("status"));
+       account.setPhone(result.getString("phone"));
+      account.setStatus_effective_start_date(getUtilDate(result.getDate("status_effective_start_date")));
+       account.setStatus_effective_end_date(getUtilDate(result.getDate("status_effective_end_date")));
+     }
+   else {
+     exceptionMsg = "User name doesn't exist. ";
+     logWriter.logErrorMessage(exceptionMsg);
+     throw new UserException(exceptionMsg);
+   }
+   }
+   catch (SQLException e){
+     System.out.println( "SQLException:"+e.getMessage());
+     e.printStackTrace();
+     exceptionMsg = "Get UserByName Failed: SQL error:"+ e.getMessage()+"  Contact System Administrator";
+      logWriter.logErrorMessage(exceptionMsg);
+     throw new UserException(exceptionMsg);
+   }
+   catch (Exception e){
+       System.out.println( "Exception:"+e.getMessage());
+      e.printStackTrace();
+      exceptionMsg = "Get UserByName Failed: System error:"+ e.getMessage()+"  Contact System Administrator";
+       logWriter.logErrorMessage(exceptionMsg);
+      throw new UserException(exceptionMsg);
+   }
+
+   return account;
+
+ }
+
+
+
+  public static User create (User account) throws UserException{
+   String exceptionMsg="";
+   User u= null;
+
+   try{
+     u= getUserByName(account.getUserName());
+   }
+   catch (UserException e){
+     u=null; //actuall this exception is our desired results!
+   }
+
+   if (u != null){
+         exceptionMsg ="CreateAccount Failed: User Name already exists:"+ account.getUserName();
+         throw new UserException(exceptionMsg);
+   }
+
+   try {
+
+     Connection con = DataManager.getConnection();
+     Statement statement = con.createStatement();
+     account.setStatus("new");
+     java.sql.Date today = new java.sql.Date(System.currentTimeMillis());
+     String sqlStatement ="insert into user (user_name,email,phone,password,status,status_effective_start_date,status_effective_end_date,created_date) values ("+
+                          makeStringParam(account.getUserName())+","+
+                          makeStringParam(account.getEmail())+","+
+                            makeStringParam(account.getPhone())+","+
+                           makeStringParam(account.getPassword())+","+
+                          makeStringParam(account.getStatus())+","+
+                          makeStringParam(today.toString() )+","+        //status_effective_start_date
+                           makeStringParam(today.toString())+","+        //status_effective_end_date
+                          makeStringParam(today.toString() )+ ");";
+
+      logWriter.logErrorMessage(sqlStatement);
+     int result = statement.executeUpdate(sqlStatement);
+   }
+   catch (SQLException e){
+     System.out.println( "SQLException:"+e.getMessage());
+     e.printStackTrace();
+     exceptionMsg = "Account Creation Failed: SQL error. Contact System Administrator. Detail Error:"+e.getMessage();
+      throw new UserException(exceptionMsg);
+   }
+   catch (Exception e){
+     System.out.println( "Exception:"+e.getMessage());
+     e.printStackTrace();
+     exceptionMsg = "Account Creation Failed: System error. Contact System Administrator";
+      throw new UserException(exceptionMsg);
+   }
+
+   User newAccount;
+   try{
+       newAccount= getUserByName(account.getUserName());
+       logWriter.logErrorMessage("Didn't we get userid here?"+newAccount.getUserId());
+     }
+     catch (UserException e){
+       exceptionMsg ="CreateAccount Failed:"+e.getMessage();
+       throw new UserException(exceptionMsg);
+   }
+
+    return newAccount;
+
+  }
+
+
+
+  public static void updatePassword (User account) throws UserException{
+    String exceptionMsg="";
+
+    try {
+
+      Connection con = DataManager.getConnection();
+      Statement statement = con.createStatement();
+       String sqlStatement ="update user set password ="+
+                           makeStringParam(account.getPassword())+ " where id= "+
+                           account.getUserId() +";";
+
+      logWriter.logErrorMessage(sqlStatement);
+      int result = statement.executeUpdate(sqlStatement);
+      if (result==1){
+
+      }
+      else {
+        System.out.println("Insert Failed");
+        exceptionMsg = "Account Password Update Failed. Contact System Administrator.";
+         throw new UserException(exceptionMsg);
+      }
+    }
+    catch (SQLException e){
+      System.out.println( "SQLException:"+e.getMessage());
+      e.printStackTrace();
+      exceptionMsg = "Account Password Update Failed: SQL error. Contact System Administrator. Detail Error:"+e.getMessage();
+       throw new UserException(exceptionMsg);
+    }
+    catch (Exception e){
+      System.out.println( "Exception:"+e.getMessage());
+      e.printStackTrace();
+      exceptionMsg = "Account Password Update Failed: System error. Contact System Administrator";
+       throw new UserException(exceptionMsg);
+    }
+   }
+
+
+   public static void insertPaymentData (User account,MembershipTerm term) throws UserException{
+     String exceptionMsg="";
+
+     try {
+
+       Connection con = DataManager.getConnection();
+       Statement statement = con.createStatement();
+       account.setStatus("new");
+       String sqlStatement ="insert into user_membership_term (user_id,membership_term_id,payment_date) values ("+
+                            account.getUserId()+","+
+                            term.getId()+","+
+                             makeStringParam(getSQLToday().toString() )+ ");";
+
+        logWriter.logErrorMessage(sqlStatement);
+       int result = statement.executeUpdate(sqlStatement);
+     }
+     catch (SQLException e){
+       System.out.println( "SQLException:"+e.getMessage());
+       e.printStackTrace();
+       exceptionMsg = "Insert PaymentData Failed: SQL error. Contact System Administrator. Detail Error:"+e.getMessage();
+        throw new UserException(exceptionMsg);
+     }
+     catch (Exception e){
+       System.out.println( "Exception:"+e.getMessage());
+       e.printStackTrace();
+       exceptionMsg = "Insert PaymentData Failed: System error. Contact System Administrator";
+        throw new UserException(exceptionMsg);
+     }
+    }
+
+    public static void receivePayment (User user, MembershipTerm term)throws UserException{
+      //update user data
+      System.out.println("User.status_effective_start_date:"+user.getStatus_effective_start_date());
+      if (user.getStatus_effective_start_date().before(getToday())){
+        user.setStatus_effective_start_date(getToday());
+      }
+
+      GregorianCalendar calendar = new GregorianCalendar();
+      calendar.add(GregorianCalendar.MONTH, term.getMonths());
+      user.setStatus_effective_end_date(calendar.getTime());
+      user.setStatus("active");
+      update(user);
+
+      //insert payment data
+      insertPaymentData(user,term);
+    }
+
+  public static User update (User account) throws UserException{
+   String exceptionMsg="";
+
+   try {
+
+     Connection con = DataManager.getConnection();
+     Statement statement = con.createStatement();
+      String sqlStatement ="update user set email ="+
+                             makeStringParam(account.getEmail())+", status="+
+                           makeStringParam(account.getStatus())+", phone="+
+                          makeStringParam(account.getPhone())+ ", status_effective_start_date="+
+                           makeStringParam(getSQLDate(account.getStatus_effective_start_date()).toString())+",status_effective_end_date="+
+                           makeStringParam(getSQLDate(account.getStatus_effective_end_date()).toString())+
+                           " where id= "+account.getUserId()+";";
+
+     System.out.println(sqlStatement);
+     logWriter.logErrorMessage(sqlStatement);
+     int result = statement.executeUpdate(sqlStatement);
+     if (result==1){
+
+     }
+     else {
+       System.out.println("Insert Failed");
+       exceptionMsg = "Account Update Failed. Contact System Administrator.";
+        throw new UserException(exceptionMsg);
+     }
+   }
+   catch (SQLException e){
+     System.out.println( "SQLException:"+e.getMessage());
+     e.printStackTrace();
+     exceptionMsg = "Account Update Failed: SQL error. Contact System Administrator. Detail Error:"+e.getMessage();
+      throw new UserException(exceptionMsg);
+   }
+   catch (Exception e){
+     System.out.println( "Exception:"+e.getMessage());
+     e.printStackTrace();
+     exceptionMsg = "Account Update Failed: System error. Contact System Administrator";
+      throw new UserException(exceptionMsg);
+   }
+
+   User newAccount;
+   try{
+       newAccount= getUserByName(account.getUserName());
+     }
+     catch (UserException e){
+       exceptionMsg ="UpdateAccount Failed:"+e.getMessage();
+       throw new UserException(exceptionMsg);
+   }
+
+   return newAccount;
+
+  }
+
+
+  public static void main(String args[]) {
+
+  java.sql.Date today = new java.sql.Date(System.currentTimeMillis());
+  User user = new User();
+  user.setUserName("testing1");
+  user.setEmail("testing@yahoo.com");
+  user.setPassword("x");
+  try{
+  UserManager.create(user);
+  }
+  catch (Exception e){
+    System.out.println("Exception:"+e.getMessage());
+  }
+
+
+    }
+
+}
